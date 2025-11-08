@@ -8,6 +8,9 @@ Maycon de Freitas Reis Silva
 
 Interface web para conectar estudantes e professores particulares. Permite buscar professores por matéria/horário e entrar em contato para agendar aulas.
 
+## Linguagem
+- Kotlin (Android/Gradle)
+
 ## Pré‑requisitos
 - Node.js 18+ e npm (ou yarn/pnpm)
 - API do Proffy em execução (defina a URL via variável de ambiente)
