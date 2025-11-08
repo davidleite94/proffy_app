@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomFilledTextFieldTop" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <!-- Fundo preenchido -->
+        <item name="boxBackgroundColor">@color/shape_02_white</item>
+
+        <!-- Cor e largura da borda -->
+        <item name="boxStrokeColor">@color/purple</item>
+        <item name="boxStrokeWidth">0dp</item>
+
+        <!-- Aparência dos cantos -->
+        <item name="shapeAppearance">@style/CustomFilledShape</item>
+
+        <!-- Setar font padrão -->
+        <item name="fontFamily">@font/poppins_regular</item>
+
+        <!-- Cor do texto que aparece -->
+        <item name="android:textColorHint">@color/text_complement</item>
+    </style>
+
+    <style name="CustomFilledShape" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <!-- Cantos superior arredondados -->
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+        <item name="cornerSizeTopRight">8dp</item>
+
+        <!-- Cantos inferiores retos -->
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <style name="CustomFilledTextFieldBottom" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <!-- Fundo preenchido -->
+        <item name="boxBackgroundColor">@color/shape_02_white</item>
+
+        <!-- Cor e largura da borda -->
+        <item name="boxStrokeColor">@color/purple</item>
+        <item name="boxStrokeWidth">0dp</item>
+
+        <!-- Aparência dos cantos -->
+        <item name="shapeAppearance">@style/CustomFilledShapeBottom</item>
+
+        <!-- Setar font padrão -->
+        <item name="fontFamily">@font/poppins_regular</item>
+
+        <!-- Cor do texto que aparece -->
+        <item name="android:textColorHint">@color/text_complement</item>
+
+        <!-- Forca o arredondamento dos cantos inferior -->
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+    </style>
+
+    <style name="CustomFilledShapeBottom" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <!-- Cantos superior arredondados -->
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+
+        <!-- Cantos inferiores retos -->
+        <item name="cornerSizeBottomLeft">8dp</item>
+        <item name="cornerSizeBottomRight">8dp</item>
+    </style>
+</resources>
