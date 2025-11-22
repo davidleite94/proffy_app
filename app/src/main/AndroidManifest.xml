@@ -11,6 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Proffy">
+
+        <activity
+            android:name=".ui.finally.FinallyActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Proffy" />
+        <activity
+            android:name=".ui.teacherList.TeacherListActivity"
+            android:exported="false"/>
         <activity
             android:name=".ui.register.RegisterStepTwoActivity"
             android:exported="false" />

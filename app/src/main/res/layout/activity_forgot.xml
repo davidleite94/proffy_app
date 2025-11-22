@@ -11,7 +11,7 @@
     <RelativeLayout
         android:id="@+id/container_background"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
+        android:layout_height="360dp"
         android:background="@color/purple"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

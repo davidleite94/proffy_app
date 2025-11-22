@@ -2,4 +2,6 @@
     <string name="app_name">Proffy</string>
     <string name="text_background_image_splashscreen">Imagem de fundo onde temos os simbolos de somar, multiplicar, pontos, circulos e também uma lupa</string>
     <string name="image_intro_splashscreen">Proffy sua plataforma de estudos online.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

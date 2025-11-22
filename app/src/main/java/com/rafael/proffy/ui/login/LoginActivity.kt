@@ -1,18 +1,19 @@
 package com.rafael.proffy.ui.login
 
 import android.content.Intent
-import android.content.res.ColorStateList
+import android.content.res.ColorStateList // Import necessário
 import android.os.Bundle
-import android.util.Log
+import android.util.Patterns // Import necessário
+import android.widget.Button // Import necessário
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat // Import necessário
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.widget.addTextChangedListener
+import androidx.core.view.WindowCompat // Import para código não-obsoleto
+import androidx.core.widget.doOnTextChanged // Import para validação de digitação
 import com.rafael.proffy.R
 import com.rafael.proffy.databinding.ActivityLoginBinding
-import com.rafael.proffy.models.validators.FormValidator
 import com.rafael.proffy.ui.forgot.ForgotActivity
 import com.rafael.proffy.ui.register.RegisterStepOneActivity
 
@@ -28,115 +29,98 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(view)
         enableEdgeToEdge()
-        window.statusBarColor = this.getColor(R.color.purple)
+
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.purple)
+        WindowCompat.getInsetsController(window, window.decorView)?.isAppearanceLightStatusBars = false
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
-
-        }
-        setupViews()
-        setupValidation()
-    }
-        private fun setupViews() {
-            val enabledButtonColor = ContextCompat.getColor(this, R.color.purple)
-            val disabledButtonColor = ContextCompat.getColor(this, R.color.shape_disable)
-
-            // Inicialmente desabilitar o botão
-            setButtonState(false, enabledButtonColor, disabledButtonColor)
-
-            binding.buttonForgot.setOnClickListener {
-                handleForgot()
-            }
-
-            binding.buttonLogin.setOnClickListener {
-                handleRegister()
-            }
-
-            binding.buttonSignup.setOnClickListener {
-                handleSignUp()
-            }
         }
 
-        private fun setupValidation() {
-            val enabledButtonColor = ContextCompat.getColor(this, R.color.purple)
-            val disabledButtonColor = ContextCompat.getColor(this, R.color.shape_disable)
+        val buttonForgot = binding.buttonForgot
+        val buttonRegister = binding.buttonSignup
+        val buttonEnter = binding.buttonLogin // ID: button_login
+        val textInputEmail = binding.textInputEditEmail
+        val textInputPassword = binding.textInputEditPassword
 
-            // Validação para campo Email
-            binding.textInputEditEmail.addTextChangedListener { text ->
-                validateFields(enabledButtonColor, disabledButtonColor)
-            }
+        val enabledButtonColor = ContextCompat.getColor(this, R.color.green)
+        val disabledButtonColor = ContextCompat.getColor(this, R.color.shape_disable)
 
-            // Validação para campo senha
-            binding.textInputEditPassword.addTextChangedListener { text ->
-                validateFields(enabledButtonColor, disabledButtonColor)
-            }
+        // 1. Lógica de Validação e Estado do Botão
+        val inputValidator = {
+            val email = textInputEmail.text.toString().trim()
+            val password = textInputPassword.text.toString().trim()
+
+            // Requer e-mail válido E senha de pelo menos 6 caracteres
+            val isValid = isValidEmail(email) && password.length >= 6
+
+            setButtonState(buttonEnter, isValid, enabledButtonColor, disabledButtonColor)
         }
 
-        public fun validateFields(enabledButtonColor: Int, disabledButtonColor: Int) {
-            val textEditEmail = binding.textInputEditEmail.text?.toString()?.trim() ?: ""
-            val textEditSenha = binding.textInputEditPassword.text?.toString()?.trim() ?: ""
+        textInputEmail.doOnTextChanged { _, _, _, _ -> inputValidator() }
+        textInputPassword.doOnTextChanged { _, _, _, _ -> inputValidator() }
 
-            Log.d("LoginActivity", "textEditEmail='$textEditEmail' textEditSenha='$textEditSenha'")
+        // Aplica o estado inicial ao carregar a tela
+        inputValidator()
 
-            // Validar email
-            val emailValidation = FormValidator.validateEmail(textEditEmail)
-            if (textEditEmail.isNotEmpty()) {
-                binding.textInputEditEmail.error = if (!emailValidation.isValid) emailValidation.errorMessage else null
+        // 2.  AÇÃO DO BOTÃO "ENTRAR" (Login)
+        buttonEnter.setOnClickListener {
+            // Revalida no clique (melhor prática)
+            val email = textInputEmail.text.toString().trim()
+            val password = textInputPassword.text.toString().trim()
+
+            if (isValidEmail(email) && password.length >= 6) {
+                // TODO: AQUI VOCÊ FARIA A CHAMADA À API DE LOGIN.
+                // Por enquanto, faremos uma simulação de sucesso:
+                handleLoginSuccess()
             } else {
-                binding.textInputEditEmail.error = null
+                // O botão não deveria estar habilitado, mas é um fallback
+                textInputEmail.error = if (!isValidEmail(email)) "E-mail inválido." else null
+                textInputPassword.error = if (password.length < 6) "Senha deve ter 6+ caracteres." else null
             }
-
-            // Validar senha
-            val passwordValidation = FormValidator.validatePassword(textEditSenha)
-            if (textEditSenha.isNotEmpty()) {
-                binding.textInputEditPassword.error = if (!passwordValidation.isValid) passwordValidation.errorMessage else null
-            } else {
-                binding.textInputEditPassword.error = null
-            }
-
-            // Habilitar botão apenas se ambos os campos são válidos E não estão vazios
-            val bothValid = emailValidation.isValid && passwordValidation.isValid &&
-                    textEditEmail.isNotEmpty() && textEditSenha.isNotEmpty()
-
-            Log.d("LoginActivity", "emailValid=${emailValidation.isValid} passwordValid=${passwordValidation.isValid} bothValid=$bothValid")
-
-            setButtonState(bothValid, enabledButtonColor, disabledButtonColor)
         }
 
-        private fun setButtonState(enabled: Boolean, enabledColor: Int, disabledColor: Int) {
-            binding.buttonLogin.isEnabled = enabled
-            val color = if (enabled) enabledColor else disabledColor
-            binding.buttonLogin.backgroundTintList = ColorStateList.valueOf(color)
-            val textColor = ContextCompat.getColor(this, R.color.shape_01_white)
-            binding.buttonLogin.setTextColor(textColor)
-
-            Log.d("LoginActivity", "Button enabled: $enabled")
+        buttonForgot.setOnClickListener {
+            handleForgot()
         }
 
-        private fun handleForgot() {
-            val intent = Intent(this, ForgotActivity::class.java)
-            startActivity(intent)
-        }
-
-        private fun handleRegister() {
-            val intent = Intent(this, RegisterStepOneActivity::class.java)
-            startActivity(intent)
-        }
-
-        private fun handleSignUp() {
-            val intent = Intent(this, RegisterStepOneActivity::class.java)
-            startActivity(intent)
+        buttonRegister.setOnClickListener {
+            handleRegister()
         }
     }
 
+    private fun handleLoginSuccess() {
 
+    }
 
+    private fun handleForgot() {
+        val intent = Intent(this, ForgotActivity::class.java)
+        startActivity(intent)
+    }
 
+    private fun handleRegister() {
+        val intent = Intent(this, RegisterStepOneActivity::class.java)
+        startActivity(intent)
+    }
 
+    // Funções Auxiliares
 
+    private fun isValidEmail(email: String): Boolean {
+        return email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
 
+    private fun setButtonState(button: Button, enabled: Boolean, enabledColor: Int, disabledColor: Int) {
+        button.isEnabled = enabled
 
+        val color = if (enabled) enabledColor else disabledColor
+        button.backgroundTintList = ColorStateList.valueOf(color)
 
-
+        // Mantém a cor do texto branca se o botão estiver habilitado
+        val textColor = ContextCompat.getColor(this, R.color.shape_01_white)
+        button.setTextColor(textColor)
+    }
+}
